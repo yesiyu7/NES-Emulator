@@ -12,6 +12,7 @@ def auto_number():
 
     return _auto_number
 
+
 auto_number = auto_number()
 
 
@@ -90,616 +91,206 @@ class TypeMode(Enum):
     Relative = auto_number()
 
 
-def nes_disassembler(code):
-    opcode = {
-        0x00: {
-            'instruction': TypeInstruction.BRK,
-            'mode': TypeMode.Implied,
-        },
-        0x01: {
-            'instruction': TypeInstruction.ORA,
-            'mode': TypeMode.Indexed_indirect,
-        },
-        0x05: {
-            'instruction': TypeInstruction.ORA,
-            'mode': TypeMode.Zero_page,
-        },
-        0x06: {
-            'instruction': TypeInstruction.ASL,
-            'mode': TypeMode.Zero_page,
-        },
-        0x08: {
-            'instruction': TypeInstruction.PHP,
-            'mode': TypeMode.Implied,
-        },
-        0x09: {
-            'instruction': TypeInstruction.ORA,
-            'mode': TypeMode.Immediate,
-        },
-        0x0a: {
-            'instruction': TypeInstruction.ASL,
-            'mode': TypeMode.Accumulator,
-        },
-        0x0d: {
-            'instruction': TypeInstruction.ORA,
-            'mode': TypeMode.Absolute,
-        },
-        0x0e: {
-            'instruction': TypeInstruction.ASL,
-            'mode': TypeMode.Absolute,
-        },
-        0x10: {
-            'instruction': TypeInstruction.BPL,
-            'mode': TypeMode.Relative,
-        },
-        0x11: {
-            'instruction': TypeInstruction.ORA,
-            'mode': TypeMode.Indirect_indexed,
-        },
-        0x15: {
-            'instruction': TypeInstruction.ORA,
-            'mode': TypeMode.Zero_page_x,
-        },
-        0x16: {
-            'instruction': TypeInstruction.ASL,
-            'mode': TypeMode.Zero_page_x,
-        },
-        0x18: {
-            'instruction': TypeInstruction.CLC,
-            'mode': TypeMode.Implied,
-        },
-        0x19: {
-            'instruction': TypeInstruction.ORA,
-            'mode': TypeMode.Absolute_y,
-        },
-        0x1d: {
-            'instruction': TypeInstruction.ORA,
-            'mode': TypeMode.Absolute_x,
-        },
-        0x1e: {
-            'instruction': TypeInstruction.ASL,
-            'mode': TypeMode.Absolute_x,
-        },
-        0x20: {
-            'instruction': TypeInstruction.JSR,
-            'mode': TypeMode.Absolute,
-        },
-        0x21: {
-            'instruction': TypeInstruction.AND,
-            'mode': TypeMode.Indexed_indirect,
-        },
-        0x24: {
-            'instruction': TypeInstruction.BIT,
-            'mode': TypeMode.Zero_page,
-        },
-        0x25: {
-            'instruction': TypeInstruction.AND,
-            'mode': TypeMode.Zero_page,
-        },
-        0x26: {
-            'instruction': TypeInstruction.ROL,
-            'mode': TypeMode.Zero_page,
-        },
-        0x28: {
-            'instruction': TypeInstruction.PLP,
-            'mode': TypeMode.Implied,
-        },
-        0x29: {
-            'instruction': TypeInstruction.AND,
-            'mode': TypeMode.Immediate,
-        },
-        0x2a: {
-            'instruction': TypeInstruction.ROL,
-            'mode': TypeMode.Accumulator,
-        },
-        0x2c: {
-            'instruction': TypeInstruction.BIT,
-            'mode': TypeMode.Absolute,
-        },
-        0x2d: {
-            'instruction': TypeInstruction.AND,
-            'mode': TypeMode.Absolute,
-        },
-        0x2e: {
-            'instruction': TypeInstruction.ROL,
-            'mode': TypeMode.Absolute,
-        },
-        0x30: {
-            'instruction': TypeInstruction.BMI,
-            'mode': TypeMode.Relative,
-        },
-        0x31: {
-            'instruction': TypeInstruction.AND,
-            'mode': TypeMode.Indirect_indexed,
-        },
-        0x35: {
-            'instruction': TypeInstruction.AND,
-            'mode': TypeMode.Zero_page_x,
-        },
-        0x36: {
-            'instruction': TypeInstruction.ROL,
-            'mode': TypeMode.Zero_page_x,
-        },
-        0x38: {
-            'instruction': TypeInstruction.SEC,
-            'mode': TypeMode.Implied,
-        },
-        0x39: {
-            'instruction': TypeInstruction.AND,
-            'mode': TypeMode.Absolute_y,
-        },
-        0x3d: {
-            'instruction': TypeInstruction.AND,
-            'mode': TypeMode.Absolute_x,
-        },
-        0x3e: {
-            'instruction': TypeInstruction.ROL,
-            'mode': TypeMode.Absolute_x,
-        },
-        0x40: {
-            'instruction': TypeInstruction.RTI,
-            'mode': TypeMode.Implied,
-        },
-        0x41: {
-            'instruction': TypeInstruction.EOR,
-            'mode': TypeMode.Indexed_indirect,
-        },
-        0x45: {
-            'instruction': TypeInstruction.EOR,
-            'mode': TypeMode.Zero_page,
-        },
-        0x46: {
-            'instruction': TypeInstruction.LSR,
-            'mode': TypeMode.Zero_page,
-        },
-        0x48: {
-            'instruction': TypeInstruction.PHA,
-            'mode': TypeMode.Implied,
-        },
-        0x49: {
-            'instruction': TypeInstruction.EOR,
-            'mode': TypeMode.Immediate,
-        },
-        0x4a: {
-            'instruction': TypeInstruction.LSR,
-            'mode': TypeMode.Accumulator,
-        },
-        0x4c: {
-            'instruction': TypeInstruction.JMP,
-            'mode': TypeMode.Absolute,
-        },
-        0x4d: {
-            'instruction': TypeInstruction.EOR,
-            'mode': TypeMode.Absolute,
-        },
-        0x4e: {
-            'instruction': TypeInstruction.LSR,
-            'mode': TypeMode.Absolute,
-        },
-        0x50: {
-            'instruction': TypeInstruction.BVC,
-            'mode': TypeMode.Relative,
-        },
-        0x51: {
-            'instruction': TypeInstruction.EOR,
-            'mode': TypeMode.Indirect_indexed,
-        },
-        0x55: {
-            'instruction': TypeInstruction.EOR,
-            'mode': TypeMode.Zero_page_x,
-        },
-        0x56: {
-            'instruction': TypeInstruction.LSR,
-            'mode': TypeMode.Zero_page_x,
-        },
-        0x58: {
-            'instruction': TypeInstruction.CLI,
-            'mode': TypeMode.Implied,
-        },
-        0x59: {
-            'instruction': TypeInstruction.EOR,
-            'mode': TypeMode.Absolute_y,
-        },
-        0x5d: {
-            'instruction': TypeInstruction.EOR,
-            'mode': TypeMode.Absolute_x,
-        },
-        0x5e: {
-            'instruction': TypeInstruction.LSR,
-            'mode': TypeMode.Absolute_x,
-        },
-        0x60: {
-            'instruction': TypeInstruction.RTS,
-            'mode': TypeMode.Implied,
-        },
-        0x61: {
-            'instruction': TypeInstruction.ADC,
-            'mode': TypeMode.Indexed_indirect,
-        },
-        0x65: {
-            'instruction': TypeInstruction.ADC,
-            'mode': TypeMode.Zero_page,
-        },
-        0x66: {
-            'instruction': TypeInstruction.ROR,
-            'mode': TypeMode.Zero_page,
-        },
-        0x68: {
-            'instruction': TypeInstruction.PLA,
-            'mode': TypeMode.Implied,
-        },
-        0x69: {
-            'instruction': TypeInstruction.ADC,
-            'mode': TypeMode.Immediate,
-        },
-        0x6a: {
-            'instruction': TypeInstruction.ROR,
-            'mode': TypeMode.Accumulator,
-        },
-        0x6c: {
-            'instruction': TypeInstruction.JMP,
-            'mode': TypeMode.Indirect,
-        },
-        0x6d: {
-            'instruction': TypeInstruction.ADC,
-            'mode': TypeMode.Absolute,
-        },
-        0x6e: {
-            'instruction': TypeInstruction.ROR,
-            'mode': TypeMode.Absolute_x,
-        },
-        0x70: {
-            'instruction': TypeInstruction.BVS,
-            'mode': TypeMode.Relative,
-        },
-        0x71: {
-            'instruction': TypeInstruction.ADC,
-            'mode': TypeMode.Indirect_indexed,
-        },
-        0x75: {
-            'instruction': TypeInstruction.ADC,
-            'mode': TypeMode.Zero_page_x,
-        },
-        0x76: {
-            'instruction': TypeInstruction.ROR,
-            'mode': TypeMode.Zero_page_x,
-        },
-        0x78: {
-            'instruction': TypeInstruction.SEI,
-            'mode': TypeMode.Implied,
-        },
-        0x79: {
-            'instruction': TypeInstruction.ADC,
-            'mode': TypeMode.Absolute_y,
-        },
-        0x7d: {
-            'instruction': TypeInstruction.ADC,
-            'mode': TypeMode.Absolute_x,
-        },
-        0x7e: {
-            'instruction': TypeInstruction.ROR,
-            'mode': TypeMode.Absolute,
-        },
-        0x81: {
-            'instruction': TypeInstruction.STA,
-            'mode': TypeMode.Indexed_indirect,
-        },
-        0x84: {
-            'instruction': TypeInstruction.STY,
-            'mode': TypeMode.Zero_page,
-        },
-        0x85: {
-            'instruction': TypeInstruction.STA,
-            'mode': TypeMode.Zero_page,
-        },
-        0x86: {
-            'instruction': TypeInstruction.STX,
-            'mode': TypeMode.Zero_page,
-        },
-        0x88: {
-            'instruction': TypeInstruction.DEY,
-            'mode': TypeMode.Implied,
-        },
-        0x8a: {
-            'instruction': TypeInstruction.TXA,
-            'mode': TypeMode.Implied,
-        },
-        0x8c: {
-            'instruction': TypeInstruction.STY,
-            'mode': TypeMode.Absolute,
-        },
-        0x8d: {
-            'instruction': TypeInstruction.STA,
-            'mode': TypeMode.Absolute,
-        },
-        0x8e: {
-            'instruction': TypeInstruction.STX,
-            'mode': TypeMode.Absolute,
-        },
-        0x90: {
-            'instruction': TypeInstruction.BCC,
-            'mode': TypeMode.Relative,
-        },
-        0x91: {
-            'instruction': TypeInstruction.STA,
-            'mode': TypeMode.Indirect_indexed,
-        },
-        0x94: {
-            'instruction': TypeInstruction.STY,
-            'mode': TypeMode.Zero_page_x,
-        },
-        0x95: {
-            'instruction': TypeInstruction.STA,
-            'mode': TypeMode.Zero_page_x,
-        },
-        0x96: {
-            'instruction': TypeInstruction.STX,
-            'mode': TypeMode.Zero_page_y,
-        },
-        0x98: {
-            'instruction': TypeInstruction.TYA,
-            'mode': TypeMode.Implied,
-        },
-        0x99: {
-            'instruction': TypeInstruction.STA,
-            'mode': TypeMode.Absolute_y,
-        },
-        0x9a: {
-            'instruction': TypeInstruction.TXS,
-            'mode': TypeMode.Implied,
-        },
-        0x9d: {
-            'instruction': TypeInstruction.STA,
-            'mode': TypeMode.Absolute_x,
-        },
-        0xa0: {
-            'instruction': TypeInstruction.LDY,
-            'mode': TypeMode.Immediate,
-        },
-        0xa1: {
-            'instruction': TypeInstruction.LDA,
-            'mode': TypeMode.Indexed_indirect,
-        },
-        0xa2: {
-            'instruction': TypeInstruction.LDX,
-            'mode': TypeMode.Immediate,
-        },
-        0xa4: {
-            'instruction': TypeInstruction.LDY,
-            'mode': TypeMode.Zero_page,
-        },
-        0xa5: {
-            'instruction': TypeInstruction.LDA,
-            'mode': TypeMode.Zero_page,
-        },
-        0xa6: {
-            'instruction': TypeInstruction.LDX,
-            'mode': TypeMode.Zero_page,
-        },
-        0xa8: {
-            'instruction': TypeInstruction.TAY,
-            'mode': TypeMode.Implied,
-        },
-        0xa9: {
-            'instruction': TypeInstruction.LDA,
-            'mode': TypeMode.Immediate,
-        },
-        0xaa: {
-            'instruction': TypeInstruction.TAX,
-            'mode': TypeMode.Implied,
-        },
-        0xac: {
-            'instruction': TypeInstruction.LDY,
-            'mode': TypeMode.Absolute,
-        },
-        0xad: {
-            'instruction': TypeInstruction.LDA,
-            'mode': TypeMode.Absolute,
-        },
-        0xae: {
-            'instruction': TypeInstruction.LDX,
-            'mode': TypeMode.Absolute,
-        },
-        0xb0: {
-            'instruction': TypeInstruction.BCS,
-            'mode': TypeMode.Relative,
-        },
-        0xb1: {
-            'instruction': TypeInstruction.LDA,
-            'mode': TypeMode.Indirect_indexed,
-        },
-        0xb4: {
-            'instruction': TypeInstruction.LDY,
-            'mode': TypeMode.Zero_page_x,
-        },
-        0xb5: {
-            'instruction': TypeInstruction.LDA,
-            'mode': TypeMode.Zero_page_x,
-        },
-        0xb6: {
-            'instruction': TypeInstruction.LDX,
-            'mode': TypeMode.Zero_page_y,
-        },
-        0xb8: {
-            'instruction': TypeInstruction.CLV,
-            'mode': TypeMode.Implied,
-        },
-        0xb9: {
-            'instruction': TypeInstruction.LDA,
-            'mode': TypeMode.Absolute_y,
-        },
-        0xba: {
-            'instruction': TypeInstruction.TSX,
-            'mode': TypeMode.Implied,
-        },
-        0xbc: {
-            'instruction': TypeInstruction.LDY,
-            'mode': TypeMode.Absolute_x,
-        },
-        0xbd: {
-            'instruction': TypeInstruction.LDA,
-            'mode': TypeMode.Absolute_x,
-        },
-        0xbe: {
-            'instruction': TypeInstruction.LDX,
-            'mode': TypeMode.Absolute_y,
-        },
-        0xc0: {
-            'instruction': TypeInstruction.CPY,
-            'mode': TypeMode.Immediate,
-        },
-        0xc1: {
-            'instruction': TypeInstruction.CMP,
-            'mode': TypeMode.Indexed_indirect,
-        },
-        0xc4: {
-            'instruction': TypeInstruction.CPY,
-            'mode': TypeMode.Zero_page,
-        },
-        0xc5: {
-            'instruction': TypeInstruction.CMP,
-            'mode': TypeMode.Zero_page,
-        },
-        0xc6: {
-            'instruction': TypeInstruction.DEC,
-            'mode': TypeMode.Zero_page,
-        },
-        0xc8: {
-            'instruction': TypeInstruction.INY,
-            'mode': TypeMode.Implied,
-        },
-        0xc9: {
-            'instruction': TypeInstruction.CMP,
-            'mode': TypeMode.Immediate,
-        },
-        0xca: {
-            'instruction': TypeInstruction.DEX,
-            'mode': TypeMode.Implied,
-        },
-        0xcc: {
-            'instruction': TypeInstruction.CPY,
-            'mode': TypeMode.Absolute,
-        },
-        0xcd: {
-            'instruction': TypeInstruction.CMP,
-            'mode': TypeMode.Absolute,
-        },
-        0xce: {
-            'instruction': TypeInstruction.DEC,
-            'mode': TypeMode.Absolute,
-        },
-        0xd0: {
-            'instruction': TypeInstruction.BNE,
-            'mode': TypeMode.Relative,
-        },
-        0xd1: {
-            'instruction': TypeInstruction.CMP,
-            'mode': TypeMode.Indirect_indexed,
-        },
-        0xd5: {
-            'instruction': TypeInstruction.CMP,
-            'mode': TypeMode.Zero_page_x,
-        },
-        0xd6: {
-            'instruction': TypeInstruction.DEC,
-            'mode': TypeMode.Zero_page_x,
-        },
-        0xd8: {
-            'instruction': TypeInstruction.CLD,
-            'mode': TypeMode.Implied,
-        },
-        0xd9: {
-            'instruction': TypeInstruction.CMP,
-            'mode': TypeMode.Absolute_y,
-        },
-        0xdd: {
-            'instruction': TypeInstruction.CMP,
-            'mode': TypeMode.Absolute_x,
-        },
-        0xde: {
-            'instruction': TypeInstruction.DEC,
-            'mode': TypeMode.Absolute_x,
-        },
-        0xe0: {
-            'instruction': TypeInstruction.CPX,
-            'mode': TypeMode.Immediate,
-        },
-        0xe1: {
-            'instruction': TypeInstruction.SBC,
-            'mode': TypeMode.Indexed_indirect,
-        },
-        0xe4: {
-            'instruction': TypeInstruction.CPX,
-            'mode': TypeMode.Zero_page,
-        },
-        0xe5: {
-            'instruction': TypeInstruction.SBC,
-            'mode': TypeMode.Zero_page,
-        },
-        0xe6: {
-            'instruction': TypeInstruction.INC,
-            'mode': TypeMode.Zero_page,
-        },
-        0xe8: {
-            'instruction': TypeInstruction.INX,
-            'mode': TypeMode.Implied,
-        },
-        0xe9: {
-            'instruction': TypeInstruction.SBC,
-            'mode': TypeMode.Immediate,
-        },
-        0xea: {
-            'instruction': TypeInstruction.NOP,
-            'mode': TypeMode.Implied,
-        },
-        0xec: {
-            'instruction': TypeInstruction.CPX,
-            'mode': TypeMode.Absolute,
-        },
-        0xed: {
-            'instruction': TypeInstruction.SBC,
-            'mode': TypeMode.Absolute,
-        },
-        0xee: {
-            'instruction': TypeInstruction.INC,
-            'mode': TypeMode.Absolute,
-        },
-        0xf0: {
-            'instruction': TypeInstruction.BEQ,
-            'mode': TypeMode.Relative,
-        },
-        0xf1: {
-            'instruction': TypeInstruction.SBC,
-            'mode': TypeMode.Indirect_indexed,
-        },
-        0xf5: {
-            'instruction': TypeInstruction.SBC,
-            'mode': TypeMode.Zero_page_x,
-        },
-        0xf6: {
-            'instruction': TypeInstruction.INC,
-            'mode': TypeMode.Zero_page_x,
-        },
-        0xf8: {
-            'instruction': TypeInstruction.SED,
-            'mode': TypeMode.Implied,
-        },
-        0xf9: {
-            'instruction': TypeInstruction.SBC,
-            'mode': TypeMode.Absolute_y,
-        },
-        0xfd: {
-            'instruction': TypeInstruction.SBC,
-            'mode': TypeMode.Absolute_x,
-        },
-        0xfe: {
-            'instruction': TypeInstruction.INC,
-            'mode': TypeMode.Absolute_x,
-        },
+def instruction_init(instruction, mode, length):
+    ins = {
+        'instruction': instruction,
+        'mode': mode,
+        'length': length,
     }
 
-    print(opcode[0])
-    print(auto_number())
+    return ins
+
+
+def nes_disassembler(nes_code):
+    instruction_list = {
+        0x00: instruction_init(TypeInstruction.BRK, TypeMode.Implied, 1),
+        0x01: instruction_init(TypeInstruction.ORA, TypeMode.Indexed_indirect, 2),
+        0x05: instruction_init(TypeInstruction.ORA, TypeMode.Zero_page, 2),
+        0x06: instruction_init(TypeInstruction.ASL, TypeMode.Zero_page, 2),
+        0x08: instruction_init(TypeInstruction.PHP, TypeMode.Implied, 1),
+        0x09: instruction_init(TypeInstruction.ORA, TypeMode.Immediate, 2),
+        0x0a: instruction_init(TypeInstruction.ASL, TypeMode.Accumulator, 1),
+        0x0d: instruction_init(TypeInstruction.ORA, TypeMode.Absolute, 3),
+        0x0e: instruction_init(TypeInstruction.ASL, TypeMode.Absolute, 3),
+        0x10: instruction_init(TypeInstruction.BPL, TypeMode.Relative, 2),
+        0x11: instruction_init(TypeInstruction.ORA, TypeMode.Indirect_indexed, 2),
+        0x15: instruction_init(TypeInstruction.ORA, TypeMode.Zero_page_x, 2),
+        0x16: instruction_init(TypeInstruction.ASL, TypeMode.Zero_page_x, 2),
+        0x18: instruction_init(TypeInstruction.CLC, TypeMode.Implied, 1),
+        0x19: instruction_init(TypeInstruction.ORA, TypeMode.Absolute_y, 3),
+        0x1d: instruction_init(TypeInstruction.ORA, TypeMode.Absolute_x, 3),
+        0x1e: instruction_init(TypeInstruction.ASL, TypeMode.Absolute_x, 3),
+        0x20: instruction_init(TypeInstruction.JSR, TypeMode.Absolute, 3),
+        0x21: instruction_init(TypeInstruction.AND, TypeMode.Indexed_indirect, 2),
+        0x24: instruction_init(TypeInstruction.BIT, TypeMode.Zero_page, 2),
+        0x25: instruction_init(TypeInstruction.AND, TypeMode.Zero_page, 2),
+        0x26: instruction_init(TypeInstruction.ROL, TypeMode.Zero_page, 2),
+        0x28: instruction_init(TypeInstruction.PLP, TypeMode.Implied, 1),
+        0x29: instruction_init(TypeInstruction.AND, TypeMode.Immediate, 2),
+        0x2a: instruction_init(TypeInstruction.ROL, TypeMode.Accumulator, 1),
+        0x2c: instruction_init(TypeInstruction.BIT, TypeMode.Absolute, 3),
+        0x2d: instruction_init(TypeInstruction.AND, TypeMode.Absolute, 3),
+        0x2e: instruction_init(TypeInstruction.ROL, TypeMode.Absolute, 3),
+        0x30: instruction_init(TypeInstruction.BMI, TypeMode.Relative, 2),
+        0x31: instruction_init(TypeInstruction.AND, TypeMode.Indirect_indexed, 2),
+        0x35: instruction_init(TypeInstruction.AND, TypeMode.Zero_page_x, 2),
+        0x36: instruction_init(TypeInstruction.ROL, TypeMode.Zero_page_x, 2),
+        0x38: instruction_init(TypeInstruction.SEC, TypeMode.Implied, 1),
+        0x39: instruction_init(TypeInstruction.AND, TypeMode.Absolute_y, 3),
+        0x3d: instruction_init(TypeInstruction.AND, TypeMode.Absolute_x, 3),
+        0x3e: instruction_init(TypeInstruction.ROL, TypeMode.Absolute_x, 3),
+        0x40: instruction_init(TypeInstruction.RTI, TypeMode.Implied, 1),
+        0x41: instruction_init(TypeInstruction.EOR, TypeMode.Indexed_indirect, 2),
+        0x45: instruction_init(TypeInstruction.EOR, TypeMode.Zero_page, 2),
+        0x46: instruction_init(TypeInstruction.LSR, TypeMode.Zero_page, 2),
+        0x48: instruction_init(TypeInstruction.PHA, TypeMode.Implied, 1),
+        0x49: instruction_init(TypeInstruction.EOR, TypeMode.Immediate, 2),
+        0x4a: instruction_init(TypeInstruction.LSR, TypeMode.Accumulator, 1),
+        0x4c: instruction_init(TypeInstruction.JMP, TypeMode.Absolute, 3),
+        0x4d: instruction_init(TypeInstruction.EOR, TypeMode.Absolute, 3),
+        0x4e: instruction_init(TypeInstruction.LSR, TypeMode.Absolute, 3),
+        0x50: instruction_init(TypeInstruction.BVC, TypeMode.Relative, 2),
+        0x51: instruction_init(TypeInstruction.EOR, TypeMode.Indirect_indexed, 2),
+        0x55: instruction_init(TypeInstruction.EOR, TypeMode.Zero_page_x, 2),
+        0x56: instruction_init(TypeInstruction.LSR, TypeMode.Zero_page_x, 2),
+        0x58: instruction_init(TypeInstruction.CLI, TypeMode.Implied, 1),
+        0x59: instruction_init(TypeInstruction.EOR, TypeMode.Absolute_y, 3),
+        0x5d: instruction_init(TypeInstruction.EOR, TypeMode.Absolute_x, 3),
+        0x5e: instruction_init(TypeInstruction.LSR, TypeMode.Absolute_x, 3),
+        0x60: instruction_init(TypeInstruction.RTS, TypeMode.Implied, 1),
+        0x61: instruction_init(TypeInstruction.ADC, TypeMode.Indexed_indirect, 1),
+        0x65: instruction_init(TypeInstruction.ADC, TypeMode.Zero_page, 2),
+        0x66: instruction_init(TypeInstruction.ROR, TypeMode.Zero_page, 2),
+        0x68: instruction_init(TypeInstruction.PLA, TypeMode.Implied, 1),
+        0x69: instruction_init(TypeInstruction.ADC, TypeMode.Immediate, 2),
+        0x6a: instruction_init(TypeInstruction.ROR, TypeMode.Accumulator, 1),
+        0x6c: instruction_init(TypeInstruction.JMP, TypeMode.Indirect, 3),
+        0x6d: instruction_init(TypeInstruction.ADC, TypeMode.Absolute, 3),
+        0x6e: instruction_init(TypeInstruction.ROR, TypeMode.Absolute_x, 3),
+        0x70: instruction_init(TypeInstruction.BVS, TypeMode.Relative, 2),
+        0x71: instruction_init(TypeInstruction.ADC, TypeMode.Indirect_indexed, 2),
+        0x75: instruction_init(TypeInstruction.ADC, TypeMode.Zero_page_x, 2),
+        0x76: instruction_init(TypeInstruction.ROR, TypeMode.Zero_page_x, 2),
+        0x78: instruction_init(TypeInstruction.SEI, TypeMode.Implied, 1),
+        0x79: instruction_init(TypeInstruction.ADC, TypeMode.Absolute_y, 3),
+        0x7d: instruction_init(TypeInstruction.ADC, TypeMode.Absolute_x, 3),
+        0x7e: instruction_init(TypeInstruction.ROR, TypeMode.Absolute, 3),
+        0x81: instruction_init(TypeInstruction.STA, TypeMode.Indexed_indirect, 2),
+        0x84: instruction_init(TypeInstruction.STY, TypeMode.Zero_page, 2),
+        0x85: instruction_init(TypeInstruction.STA, TypeMode.Zero_page, 2),
+        0x86: instruction_init(TypeInstruction.STX, TypeMode.Zero_page, 2),
+        0x88: instruction_init(TypeInstruction.DEY, TypeMode.Implied, 1),
+        0x8a: instruction_init(TypeInstruction.TXA, TypeMode.Implied, 1),
+        0x8c: instruction_init(TypeInstruction.STY, TypeMode.Absolute, 3),
+        0x8d: instruction_init(TypeInstruction.STA, TypeMode.Absolute, 3),
+        0x8e: instruction_init(TypeInstruction.STX, TypeMode.Absolute, 3),
+        0x90: instruction_init(TypeInstruction.BCC, TypeMode.Relative, 2),
+        0x91: instruction_init(TypeInstruction.STA, TypeMode.Indirect_indexed, 2),
+        0x94: instruction_init(TypeInstruction.STY, TypeMode.Zero_page_x, 2),
+        0x95: instruction_init(TypeInstruction.STA, TypeMode.Zero_page_x, 2),
+        0x96: instruction_init(TypeInstruction.STX, TypeMode.Zero_page_y, 2),
+        0x98: instruction_init(TypeInstruction.TYA, TypeMode.Implied, 1),
+        0x99: instruction_init(TypeInstruction.STA, TypeMode.Absolute_y, 3),
+        0x9a: instruction_init(TypeInstruction.TXS, TypeMode.Implied, 1),
+        0x9d: instruction_init(TypeInstruction.STA, TypeMode.Absolute_x, 3),
+        0xa0: instruction_init(TypeInstruction.LDY, TypeMode.Immediate, 2),
+        0xa1: instruction_init(TypeInstruction.LDA, TypeMode.Indexed_indirect, 2),
+        0xa2: instruction_init(TypeInstruction.LDX, TypeMode.Immediate, 2),
+        0xa4: instruction_init(TypeInstruction.LDY, TypeMode.Zero_page, 2),
+        0xa5: instruction_init(TypeInstruction.LDA, TypeMode.Zero_page, 2),
+        0xa6: instruction_init(TypeInstruction.LDX, TypeMode.Zero_page, 2),
+        0xa8: instruction_init(TypeInstruction.TAY, TypeMode.Implied, 1),
+        0xa9: instruction_init(TypeInstruction.LDA, TypeMode.Immediate, 2),
+        0xaa: instruction_init(TypeInstruction.TAX, TypeMode.Implied, 1),
+        0xac: instruction_init(TypeInstruction.LDY, TypeMode.Absolute, 3),
+        0xad: instruction_init(TypeInstruction.LDA, TypeMode.Absolute, 3),
+        0xae: instruction_init(TypeInstruction.LDX, TypeMode.Absolute, 3),
+        0xb0: instruction_init(TypeInstruction.BCS, TypeMode.Relative, 2),
+        0xb1: instruction_init(TypeInstruction.LDA, TypeMode.Indirect_indexed, 2),
+        0xb4: instruction_init(TypeInstruction.LDY, TypeMode.Zero_page_x, 2),
+        0xb5: instruction_init(TypeInstruction.LDA, TypeMode.Zero_page_x, 2),
+        0xb6: instruction_init(TypeInstruction.LDX, TypeMode.Zero_page_y, 2),
+        0xb8: instruction_init(TypeInstruction.CLV, TypeMode.Implied, 1),
+        0xb9: instruction_init(TypeInstruction.LDA, TypeMode.Absolute_y, 3),
+        0xba: instruction_init(TypeInstruction.TSX, TypeMode.Implied, 1),
+        0xbc: instruction_init(TypeInstruction.LDY, TypeMode.Absolute_x, 3),
+        0xbd: instruction_init(TypeInstruction.LDA, TypeMode.Absolute_x, 3),
+        0xbe: instruction_init(TypeInstruction.LDX, TypeMode.Absolute_y, 3),
+        0xc0: instruction_init(TypeInstruction.CPY, TypeMode.Immediate, 2),
+        0xc1: instruction_init(TypeInstruction.CMP, TypeMode.Indexed_indirect, 2),
+        0xc4: instruction_init(TypeInstruction.CPY, TypeMode.Zero_page, 2),
+        0xc5: instruction_init(TypeInstruction.CMP, TypeMode.Zero_page, 2),
+        0xc6: instruction_init(TypeInstruction.DEC, TypeMode.Zero_page, 2),
+        0xc8: instruction_init(TypeInstruction.INY, TypeMode.Implied, 1),
+        0xc9: instruction_init(TypeInstruction.CMP, TypeMode.Immediate, 2),
+        0xca: instruction_init(TypeInstruction.DEX, TypeMode.Implied, 1),
+        0xcc: instruction_init(TypeInstruction.CPY, TypeMode.Absolute, 3),
+        0xcd: instruction_init(TypeInstruction.CMP, TypeMode.Absolute, 3),
+        0xce: instruction_init(TypeInstruction.DEC, TypeMode.Absolute, 3),
+        0xd0: instruction_init(TypeInstruction.BNE, TypeMode.Relative, 2),
+        0xd1: instruction_init(TypeInstruction.CMP, TypeMode.Indirect_indexed, 2),
+        0xd5: instruction_init(TypeInstruction.CMP, TypeMode.Zero_page_x, 2),
+        0xd6: instruction_init(TypeInstruction.DEC, TypeMode.Zero_page_x, 2),
+        0xd8: instruction_init(TypeInstruction.CLD, TypeMode.Implied, 1),
+        0xd9: instruction_init(TypeInstruction.CMP, TypeMode.Absolute_y, 3),
+        0xdd: instruction_init(TypeInstruction.CMP, TypeMode.Absolute_x, 3),
+        0xde: instruction_init(TypeInstruction.DEC, TypeMode.Absolute_x, 3),
+        0xe0: instruction_init(TypeInstruction.CPX, TypeMode.Immediate, 2),
+        0xe1: instruction_init(TypeInstruction.SBC, TypeMode.Indexed_indirect, 2),
+        0xe4: instruction_init(TypeInstruction.CPX, TypeMode.Zero_page, 2),
+        0xe5: instruction_init(TypeInstruction.SBC, TypeMode.Zero_page, 2),
+        0xe6: instruction_init(TypeInstruction.INC, TypeMode.Zero_page, 2),
+        0xe8: instruction_init(TypeInstruction.INX, TypeMode.Implied, 1),
+        0xe9: instruction_init(TypeInstruction.SBC, TypeMode.Immediate, 2),
+        0xea: instruction_init(TypeInstruction.NOP, TypeMode.Implied, 1),
+        0xec: instruction_init(TypeInstruction.CPX, TypeMode.Absolute, 3),
+        0xed: instruction_init(TypeInstruction.SBC, TypeMode.Absolute, 3),
+        0xee: instruction_init(TypeInstruction.INC, TypeMode.Absolute, 3),
+        0xf0: instruction_init(TypeInstruction.BEQ, TypeMode.Relative, 2),
+        0xf1: instruction_init(TypeInstruction.SBC, TypeMode.Indirect_indexed, 2),
+        0xf5: instruction_init(TypeInstruction.SBC, TypeMode.Zero_page_x, 2),
+        0xf6: instruction_init(TypeInstruction.INC, TypeMode.Zero_page_x, 2),
+        0xf8: instruction_init(TypeInstruction.SED, TypeMode.Implied, 1),
+        0xf9: instruction_init(TypeInstruction.SBC, TypeMode.Absolute_y, 3),
+        0xfd: instruction_init(TypeInstruction.SBC, TypeMode.Absolute_x, 3),
+        0xfe: instruction_init(TypeInstruction.INC, TypeMode.Absolute_x, 3),
+    }
+
+    assembler_code = []
+    pc = 0
+
+    while pc < len(nes_code):
+        op = nes_code[pc]
+        ins = instruction_list[op]
+        length = ins['length']
+
+        if length == 1:
+            assembler_code.append(ins)
+            log_assembler_code(pc, op, ins, 1)
+
+            pc += 1
+        elif length == 2:
+            assembler_code.append(ins)
+            assembler_code.append(nes_code[pc + 1])
+            log_assembler_code(pc, op, ins, 2)
+
+            pc += 2
+        elif length == 3:
+            assembler_code.append(ins)
+            assembler_code.append(nes_code[pc + 1])
+            assembler_code.append(nes_code[pc + 2])
+            log_assembler_code(pc, op, ins, 3)
+
+            pc += 3
+        else:
+            print('error')
+
+        # print(pc, assembler_code)
+
+
+def log_assembler_code(pc, op, instruction, n):
+    ins_name = instruction['instruction'].name
+    print("pc(0x{:0>4x}) op(0x{:0>2x}) {} {}".format(pc, op, ins_name, n))
 
 
 def load_nes_code(file_path):
